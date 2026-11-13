@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <!-- Hace que la página se adapte al ancho del celular -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mileny Lima | Estudiante de Contaduría Pública</title>
+  <meta name="description" content="Página personal de Esther Mileny Lima, estudiante de último año de Contaduría Pública en la Universidad Católica Boliviana, La Paz, Bolivia.">
+  <meta name="theme-color" content="#F5F6F1">
+  <!-- Ícono de la pestaña: un emoji, sin necesidad de subir otro archivo -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📒%3C/text%3E%3C/svg%3E">
+
+  <!-- Tipografías de Google Fonts (si no cargan, se usan las de respaldo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================
+       1. VARIABLES (colores y tipografías)
+       Si quieres cambiar los colores de toda la página,
+       solo cambia estos valores.
+       ===================================================== */
+    :root {
+      --papel: #F5F6F1;        /* fondo general, como hoja de libro contable */
+      --blanco: #FFFFFF;
+      --tinta: #16263A;        /* texto principal */
+      --suave: #46576A;        /* texto secundario */
+      --verde: #2C6B5A;        /* color principal */
+      --verde-claro: #DCE9E3;
+      --magenta: #B0305F;      /* color de acento (inspirado en los tejidos andinos) */
+      --linea: #CAD6D0;        /* líneas del "cuaderno" */
+      --error: #A4262C;
+      --ok: #1E6B45;
+
+      --titulos: "Fraunces", Georgia, "Times New Roman", serif;
+      --texto: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+      --alto-menu: 68px;
+    }
+
+    /* =====================================================
+       2. ESTILOS BASE
+       ===================================================== */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;            /* desplazamiento suave al tocar el menú */
+      scroll-padding-top: var(--alto-menu);
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--texto);
+      font-size: 1.0625rem;
+      line-height: 1.65;
+      color: var(--tinta);
+      background: var(--papel);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: var(--verde); }
+    h1, h2, h3 { font-family: var(--titulos); line-height: 1.15; margin: 0; }
+    p { margin: 0 0 1rem; max-width: 65ch; }
+    ul { margin: 0; padding: 0; list-style: none; }
+
+    /* Cuando se navega con teclado, se ve claramente dónde está el foco */
+    :focus-visible { outline: 3px solid var(--magenta); outline-offset: 3px; border-radius: 4px; }
+
+    .contenedor { width: min(1080px, 100% - 2.5rem); margin-inline: auto; }
+
+    section { padding: 5.5rem 0; }
+    section h2 { font-size: clamp(1.9rem, 4vw, 2.5rem); margin-bottom: 2.25rem; }
+
+    /* Enlace para saltar al contenido (ayuda a quien usa teclado) */
+    .saltar {
+      position: absolute; left: 1rem; top: -4rem;
+      background: var(--tinta); color: #fff; padding: .6rem 1rem; border-radius: 6px; z-index: 100;
+    }
+    .saltar:focus { top: 1rem; }
+
+    /* Botones */
+    .boton {
+      display: inline-block; font: inherit; font-weight: 600; cursor: pointer;
+      padding: .8rem 1.5rem; border-radius: 8px; text-decoration: none;
+      border: 2px solid var(--verde); transition: background .2s, color .2s, transform .2s;
+    }
+    .boton--lleno { background: var(--verde); color: #fff; }
+    .boton--lleno:hover { background: #235748; border-color: #235748; }
+    .boton--borde { background: transparent; color: var(--verde); }
+    .boton--borde:hover { background: var(--verde-claro); }
+    .boton:active { transform: translateY(1px); }
+    .boton[disabled] { opacity: .6; cursor: wait; }
+
+    /* =====================================================
+       3. MENÚ SUPERIOR
+       ===================================================== */
+    .menu-barra {
+      position: sticky; top: 0; z-index: 50; height: var(--alto-menu);
+      background: rgba(245, 246, 241, .94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--linea);
+    }
+    .menu-barra .contenedor { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-family: var(--titulos); font-weight: 700; font-size: 1.25rem; color: var(--tinta); text-decoration: none; }
+
+    .menu-lista { display: flex; gap: 1.75rem; }
+    .menu-lista a {
+      color: var(--tinta); text-decoration: none; font-weight: 500; padding: .35rem 0;
+      border-bottom: 2px solid transparent; transition: border-color .2s, color .2s;
+    }
+    .menu-lista a:hover { border-color: var(--linea); }
+    .menu-lista a[aria-current="true"] { color: var(--verde); border-color: var(--magenta); }
+
+    /* Botón de las tres rayitas (solo se ve en celular) */
+    .menu-boton {
+      display: none; width: 44px; height: 44px; padding: 0; cursor: pointer;
+      background: transparent; border: 1px solid var(--linea); border-radius: 8px;
+      align-items: center; justify-content: center; flex-direction: column; gap: 5px;
+    }
+    .menu-boton span { display: block; width: 22px; height: 2px; background: var(--tinta); transition: transform .25s, opacity .25s; }
+    .menu-boton[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .menu-boton[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .menu-boton[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 760px) {
+      .menu-boton { display: flex; }
+      .menu-lista {
+        position: absolute; top: var(--alto-menu); left: 0; right: 0;
+        flex-direction: column; gap: 0; background: var(--papel);
+        border-bottom: 1px solid var(--linea);
+        max-height: 0; overflow: hidden; visibility: hidden;
+        transition: max-height .3s ease, visibility .3s;
+      }
+      .menu-lista.abierto { max-height: 420px; visibility: visible; }
+      .menu-lista a { padding: 1rem 1.25rem; border-bottom: 1px solid var(--linea); }
+      .menu-lista a[aria-current="true"] { border-bottom-color: var(--linea); border-left: 4px solid var(--magenta); }
+    }
+
+    /* =====================================================
+       4. INICIO (portada con estilo de hoja de libro contable)
+       ===================================================== */
+    .inicio {
+      padding: 4.5rem 0 5rem;
+      /* Renglones de cuaderno contable */
+      background-image: linear-gradient(var(--linea) 1px, transparent 1px);
+      background-size: 100% 38px;
+      position: relative;
+    }
+    /* Línea vertical de margen, como en un libro de contabilidad */
+    .inicio::before {
+      content: ""; position: absolute; top: 0; bottom: 0; left: max(1.1rem, calc((100% - 1080px) / 2 - 1.2rem));
+      width: 2px; background: var(--magenta); opacity: .45;
+    }
+    .inicio .contenedor { display: grid; grid-template-columns: 1.3fr .7fr; gap: 3rem; align-items: center; }
+    .inicio h1 { font-size: clamp(2.5rem, 7vw, 4.4rem); font-weight: 700; letter-spacing: -.01em; margin-bottom: 1.25rem; }
+    .frase { font-size: 1.25rem; color: var(--suave); max-width: 32ch; margin-bottom: 2rem; }
+    .acciones { display: flex; flex-wrap: wrap; gap: .85rem; }
+
+    .foto-marco { justify-self: center; position: relative; }
+    .foto-marco img {
+      width: 240px; aspect-ratio: 195 / 203; object-fit: cover;
+      border: 2px solid var(--tinta); border-radius: 6px;
+      box-shadow: 14px 14px 0 var(--verde-claro);
+      background: var(--verde-claro);
+    }
+
+    @media (max-width: 760px) {
+      .inicio { padding: 2.5rem 0 3.5rem; }
+      .inicio .contenedor { grid-template-columns: 1fr; gap: 2rem; }
+      .foto-marco { order: -1; justify-self: start; }
+      .foto-marco img { width: 170px; box-shadow: 10px 10px 0 var(--verde-claro); }
+    }
+
+    /* =====================================================
+       5. SOBRE MÍ
+       ===================================================== */
+    .sobre-mi .contenedor { display: grid; grid-template-columns: 1.4fr 1fr; gap: 3.5rem; align-items: start; }
+    .datos { background: var(--blanco); border: 1px solid var(--linea); border-radius: 10px; padding: 1.5rem 1.6rem; }
+    .datos dl { margin: 0; }
+    .datos dt { font-weight: 600; color: var(--verde); font-size: .95rem; }
+    .datos dd { margin: 0 0 1rem; }
+    .datos dd:last-child { margin-bottom: 0; }
+    @media (max-width: 760px) { .sobre-mi .contenedor { grid-template-columns: 1fr; gap: 2rem; } }
+
+    /* =====================================================
+       6. EXPERIENCIA Y FORMACIÓN (línea de tiempo)
+       ===================================================== */
+    .trayectoria { background: var(--blanco); border-block: 1px solid var(--linea); }
+    .trayectoria .contenedor { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; }
+    .trayectoria h3 { font-size: 1.4rem; margin-bottom: 1.5rem; }
+    .linea-tiempo { border-left: 2px solid var(--linea); padding-left: 1.5rem; display: grid; gap: 1.75rem; }
+    .hito { position: relative; }
+    .hito::before {
+      content: ""; position: absolute; left: calc(-1.5rem - 7px); top: .5rem;
+      width: 12px; height: 12px; border-radius: 50%; background: var(--magenta); border: 2px solid var(--blanco);
+      box-shadow: 0 0 0 1px var(--magenta);
+    }
+    .hito h4 { margin: 0; font-size: 1.1rem; font-weight: 600; }
+    .hito .fecha { color: var(--magenta); font-weight: 600; font-size: .95rem; }
+    .hito .lugar { color: var(--suave); margin: 0; }
+    .hito ul { margin-top: .4rem; }
+    .hito li { position: relative; padding-left: 1.1rem; margin-bottom: .2rem; }
+    .hito li::before { content: ""; position: absolute; left: 0; top: .75em; width: 6px; height: 6px; background: var(--verde); border-radius: 50%; }
+    .certificados { margin-top: 2.25rem; }
+    .certificados h3 { font-size: 1.2rem; margin-bottom: .75rem; }
+    .certificados li { padding: .55rem 0; border-bottom: 1px solid var(--linea); }
+    @media (max-width: 760px) { .trayectoria .contenedor { grid-template-columns: 1fr; gap: 3rem; } }
+
+    /* =====================================================
+       7. HABILIDADES
+       ===================================================== */
+    .grupos-habilidades { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; }
+    .grupos-habilidades h3 { font-size: 1.2rem; margin-bottom: .9rem; color: var(--verde); }
+    .etiquetas { display: flex; flex-wrap: wrap; gap: .55rem; }
+    .etiquetas li {
+      background: var(--verde-claro); color: var(--tinta);
+      padding: .4rem .95rem; border-radius: 999px; font-size: .97rem; font-weight: 500;
+    }
+
+    /* =====================================================
+       8. SERVICIOS (filas, como renglones de un libro)
+       ===================================================== */
+    .servicios { background: var(--blanco); border-block: 1px solid var(--linea); }
+    .servicios .intro { color: var(--suave); margin-top: -1.25rem; margin-bottom: 2rem; }
+    .fila-servicio {
+      display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem;
+      padding: 1.4rem 0; border-top: 1px solid var(--linea);
+    }
+    .fila-servicio:last-child { border-bottom: 1px solid var(--linea); }
+    .fila-servicio h3 { font-size: 1.3rem; }
+    .fila-servicio p { margin: 0; color: var(--suave); }
+    @media (max-width: 760px) { .fila-servicio { grid-template-columns: 1fr; gap: .5rem; } }
+
+    /* =====================================================
+       9. CONTACTO Y FORMULARIO
+       ===================================================== */
+    .contacto .contenedor { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3.5rem; align-items: start; }
+    .contacto-datos li { padding: .7rem 0; border-bottom: 1px solid var(--linea); }
+    .contacto-datos strong { display: block; font-size: .92rem; color: var(--verde); }
+    .contacto-datos a { color: var(--tinta); }
+
+    form { background: var(--blanco); border: 1px solid var(--linea); border-radius: 10px; padding: 1.75rem; }
+    .campo { margin-bottom: 1.2rem; }
+    label { display: block; font-weight: 600; margin-bottom: .35rem; }
+    input, textarea {
+      width: 100%; font: inherit; color: var(--tinta);
+      padding: .75rem .9rem; border: 1.5px solid #9FB0A8; border-radius: 8px; background: #fff;
+    }
+    textarea { min-height: 150px; resize: vertical; }
+    input:focus-visible, textarea:focus-visible { outline: 3px solid var(--magenta); outline-offset: 1px; }
+    .campo.con-error input, .campo.con-error textarea { border-color: var(--error); }
+    .mensaje-error { color: var(--error); font-size: .92rem; margin: .3rem 0 0; min-height: 1.2em; }
+    .trampa { position: absolute; left: -9999px; }   /* campo oculto anti-spam */
+
+    .estado { margin: 1rem 0 0; font-weight: 600; min-height: 1.5em; }
+    .estado.ok { color: var(--ok); }
+    .estado.fallo { color: var(--error); }
+    @media (max-width: 760px) { .contacto .contenedor { grid-template-columns: 1fr; gap: 2rem; } form { padding: 1.25rem; } }
+
+    /* =====================================================
+       10. PIE DE PÁGINA
+       ===================================================== */
+    footer { padding: 2rem 0; text-align: center; color: var(--suave); font-size: .95rem; border-top: 1px solid var(--linea); }
+    footer p { margin: 0 auto; }
+
+    /* =====================================================
+       11. ANIMACIONES AL BAJAR (solo si el navegador las permite)
+       La clase "js" la agrega JavaScript; así, si JS falla, todo se ve igual.
+       ===================================================== */
+    .js .aparecer { opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; }
+    .js .aparecer.visible { opacity: 1; transform: none; }
+
+    /* Respeta a quienes pidieron menos movimiento en su celular/computadora */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+      .js .aparecer { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+  <!-- ================= MENÚ ================= -->
+  <header class="menu-barra">
+    <div class="contenedor">
+      <a class="logo" href="#inicio">Mileny Lima</a>
+
+      <!-- Botón de tres rayitas (celular) -->
+      <button class="menu-boton" id="menuBoton" type="button" aria-expanded="false" aria-controls="menuLista" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav aria-label="Principal">
+        <ul class="menu-lista" id="menuLista">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#sobre-mi">Sobre mí</a></li>
+          <li><a href="#trayectoria">Experiencia y formación</a></li>
+          <li><a href="#habilidades">Habilidades</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+
+    <!-- ================= INICIO ================= -->
+    <section class="inicio" id="inicio">
+      <div class="contenedor">
+        <div>
+          <h1>Esther Mileny Lima</h1>
+          <p class="frase">Estudiante de Contaduría Pública con ganas de aprender y aportar.</p>
+          <div class="acciones">
+            <!-- El archivo CV-Mileny-Lima.pdf debe estar en la misma carpeta que este index.html -->
+            <a class="boton boton--lleno" href="CV-Mileny-Lima.pdf" download>Descargar mi hoja de vida</a>
+            <a class="boton boton--borde" href="#contacto">Contáctame</a>
+          </div>
+        </div>
+        <div class="foto-marco">
+          <img src="data:image/jpeg;base64,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" alt="Foto de Esther Mileny Lima" width="195" height="203">
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SOBRE MÍ ================= -->
+    <section class="sobre-mi" id="sobre-mi">
+      <div class="contenedor">
+        <div class="aparecer">
+          <h2>Sobre mí</h2>
+          <p>Soy estudiante de último año de la carrera de Contaduría Pública en la Universidad Católica Boliviana.</p>
+          <p>Tengo experiencia en atención al cliente y ventas, y un nivel básico en costura y confección. Me caracterizo por mis habilidades organizativas y mi disposición para aprender y aportar en entornos administrativos y contables.</p>
+        </div>
+        <div class="datos aparecer">
+          <dl>
+            <dt>Estudios</dt>
+            <dd>Contaduría Pública, Universidad Católica Boliviana (UCB)</dd>
+            <dt>Ciudad</dt>
+            <dd>La Paz, Bolivia</dd>
+            <dt>Idiomas</dt>
+            <dd>Castellano y aimara básico</dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= EXPERIENCIA Y FORMACIÓN ================= -->
+    <section class="trayectoria" id="trayectoria">
+      <div class="contenedor">
+
+        <div class="aparecer">
+          <h2>Experiencia</h2>
+          <div class="linea-tiempo">
+            <div class="hito">
+              <h4>Prácticas pre-profesionales</h4>
+              <p class="lugar">Área contable y presupuestaria</p>
+            </div>
+            <div class="hito">
+              <h4>Ventas</h4>
+              <ul>
+                <li>Atención directa al cliente y asesoría en la elección de prendas.</li>
+                <li>Manejo de caja, cobros y control básico de inventario.</li>
+              </ul>
+            </div>
+            <div class="hito">
+              <h4>Confección</h4>
+              <ul>
+                <li>Apoyo en la confección y ajuste de prendas (costura).</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="aparecer">
+          <h2>Formación</h2>
+          <div class="linea-tiempo">
+            <div class="hito">
+              <span class="fecha">2023 – 2026</span>
+              <h4>Técnico Superior en Contaduría Pública</h4>
+              <p class="lugar">Universidad Católica Boliviana (UCB)</p>
+            </div>
+            <div class="hito">
+              <span class="fecha">2009 – 2020</span>
+              <h4>Bachiller en Humanidades</h4>
+              <p class="lugar">U.E. Nal. Ayacucho</p>
+            </div>
+          </div>
+
+          <div class="certificados">
+            <h3>Certificaciones</h3>
+            <ul>
+              <li>Certificado de Prácticas Pre-profesional en Área Contable y Presupuestaria</li>
+              <li>Certificado de Capacitación en Formación de Cajero Bancario</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= HABILIDADES ================= -->
+    <section id="habilidades">
+      <div class="contenedor">
+        <h2 class="aparecer">Habilidades</h2>
+        <div class="grupos-habilidades aparecer">
+          <div>
+            <h3>Administrativas y contables</h3>
+            <ul class="etiquetas">
+              <li>Área contable y presupuestaria (prácticas)</li>
+              <li>Manejo de caja y cobros</li>
+              <li>Control básico de inventario</li>
+              <li>Word y Excel (básico-intermedio)</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Atención y ventas</h3>
+            <ul class="etiquetas">
+              <li>Atención al cliente</li>
+              <li>Asesoría en la elección de prendas</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Personales y otras</h3>
+            <ul class="etiquetas">
+              <li>Habilidades organizativas</li>
+              <li>Disposición para aprender</li>
+              <li>Costura y confección (básico)</li>
+              <li>Castellano y aimara básico</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SERVICIOS ================= -->
+    <section class="servicios" id="servicios">
+      <div class="contenedor">
+        <h2 class="aparecer">Servicios</h2>
+        <!-- Cuando tengas proyectos propios, puedes agregar más filas copiando un bloque "fila-servicio". -->
+        <p class="intro aparecer">Áreas en las que puedo apoyar, según mi experiencia.</p>
+        <div class="aparecer">
+          <div class="fila-servicio">
+            <h3>Apoyo contable y presupuestario</h3>
+            <p>Apoyo en tareas del área contable y presupuestaria, basado en mis prácticas pre-profesionales.</p>
+          </div>
+          <div class="fila-servicio">
+            <h3>Atención al cliente y ventas</h3>
+            <p>Atención directa, asesoría en la elección de productos y trato cercano con las personas.</p>
+          </div>
+          <div class="fila-servicio">
+            <h3>Caja e inventario</h3>
+            <p>Manejo de caja, cobros y control básico de inventario.</p>
+          </div>
+          <div class="fila-servicio">
+            <h3>Ajuste y confección de prendas</h3>
+            <p>Apoyo en la confección y el ajuste de prendas (costura, nivel básico).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACTO ================= -->
+    <section class="contacto" id="contacto">
+      <div class="contenedor">
+        <div class="aparecer">
+          <h2>Contacto</h2>
+          <p>Escríbeme y te responderé lo antes posible.</p>
+          <ul class="contacto-datos">
+            <li><strong>Correo</strong><a href="mailto:milenylima000q@gmail.com">milenylima000q@gmail.com</a></li>
+            <li><strong>Teléfono</strong><a href="tel:+59163194432">(591) 63194432</a></li>
+            <li><strong>WhatsApp</strong><a href="https://wa.me/59163194432" target="_blank" rel="noopener">Escribir por WhatsApp</a></li>
+            <li><strong>Ciudad</strong>La Paz, Bolivia</li>
+          </ul>
+        </div>
+
+        <!-- novalidate: la validación la hacemos nosotros con JavaScript para poder mostrar mensajes en español -->
+        <form id="formContacto" class="aparecer" novalidate>
+          <div class="campo">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" autocomplete="name" maxlength="80" required aria-describedby="error-nombre">
+            <p class="mensaje-error" id="error-nombre"></p>
+          </div>
+          <div class="campo">
+            <label for="correo">Correo electrónico</label>
+            <input type="email" id="correo" name="correo" autocomplete="email" maxlength="120" required aria-describedby="error-correo">
+            <p class="mensaje-error" id="error-correo"></p>
+          </div>
+          <div class="campo">
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" maxlength="1000" required aria-describedby="error-mensaje"></textarea>
+            <p class="mensaje-error" id="error-mensaje"></p>
+          </div>
+
+          <!-- Campo trampa para robots: las personas no lo ven -->
+          <div class="trampa" aria-hidden="true">
+            <label for="web">No llenar este campo</label>
+            <input type="text" id="web" name="web" tabindex="-1" autocomplete="off">
+          </div>
+
+          <button class="boton boton--lleno" type="submit" id="botonEnviar">Enviar mensaje</button>
+          <p class="estado" id="estado" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© <span id="anio"></span> Esther Mileny Lima. La Paz, Bolivia.</p>
+  </footer>
+
+  <script>
+    /* =====================================================
+       CONFIGURACIÓN
+       ► Aquí debes pegar la URL de tu Aplicación web de Google Apps Script
+         (la que termina en /exec). Déjala entre las comillas.
+       ===================================================== */
+    const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbxE4d44nbE5I652LQPa8NTugXv1okRD1ukwwe8MYQyYg-10cPvv7LStudr2WO4U-oPh/exec";
+
+    /* Avisamos al CSS que JavaScript funciona (activa las animaciones) */
+    document.documentElement.classList.add("js");
+
+    /* Año automático del pie de página */
+    document.getElementById("anio").textContent = new Date().getFullYear();
+
+    /* =====================================================
+       1. MENÚ DEL CELULAR (se abre y se cierra)
+       ===================================================== */
+    const menuBoton = document.getElementById("menuBoton");
+    const menuLista = document.getElementById("menuLista");
+
+    function abrirCerrarMenu(abrir) {
+      menuLista.classList.toggle("abierto", abrir);
+      menuBoton.setAttribute("aria-expanded", String(abrir));
+      menuBoton.setAttribute("aria-label", abrir ? "Cerrar menú" : "Abrir menú");
+    }
+
+    // Al tocar el botón de las rayitas
+    menuBoton.addEventListener("click", () => {
+      abrirCerrarMenu(!menuLista.classList.contains("abierto"));
+    });
+
+    // Al tocar una opción del menú, se cierra solo
+    menuLista.querySelectorAll("a").forEach((enlace) => {
+      enlace.addEventListener("click", () => abrirCerrarMenu(false));
+    });
+
+    // Al tocar fuera del menú, se cierra
+    document.addEventListener("click", (evento) => {
+      const tocoMenu = evento.target.closest(".menu-barra");
+      if (!tocoMenu) abrirCerrarMenu(false);
+    });
+
+    // Con la tecla Escape, se cierra
+    document.addEventListener("keydown", (evento) => {
+      if (evento.key === "Escape") abrirCerrarMenu(false);
+    });
+
+    // Si se agranda la pantalla (por ejemplo, al girar el celular), se reinicia el menú
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 760) abrirCerrarMenu(false);
+    });
+
+    /* =====================================================
+       2. ANIMACIONES SUAVES AL BAJAR
+       Cada elemento con la clase "aparecer" se muestra cuando entra en pantalla.
+       ===================================================== */
+    const elementosAparecer = document.querySelectorAll(".aparecer");
+
+    if ("IntersectionObserver" in window) {
+      const observador = new IntersectionObserver((entradas) => {
+        entradas.forEach((entrada) => {
+          if (entrada.isIntersecting) {
+            entrada.target.classList.add("visible");
+            observador.unobserve(entrada.target);   // solo se anima una vez
+          }
+        });
+      }, { threshold: 0.12 });
+      elementosAparecer.forEach((el) => observador.observe(el));
+    } else {
+      // Navegadores muy antiguos: mostramos todo sin animación
+      elementosAparecer.forEach((el) => el.classList.add("visible"));
+    }
+
+    /* =====================================================
+       3. MENÚ ACTIVO: marca en qué sección estás
+       ===================================================== */
+    const secciones = document.querySelectorAll("main section[id]");
+    const enlacesMenu = document.querySelectorAll(".menu-lista a");
+
+    if ("IntersectionObserver" in window) {
+      const observadorSecciones = new IntersectionObserver((entradas) => {
+        entradas.forEach((entrada) => {
+          if (entrada.isIntersecting) {
+            enlacesMenu.forEach((enlace) => {
+              const esActual = enlace.getAttribute("href") === "#" + entrada.target.id;
+              if (esActual) enlace.setAttribute("aria-current", "true");
+              else enlace.removeAttribute("aria-current");
+            });
+          }
+        });
+      }, { rootMargin: "-45% 0px -50% 0px" });   // detecta la sección que está en el centro de la pantalla
+      secciones.forEach((seccion) => observadorSecciones.observe(seccion));
+    }
+
+    /* =====================================================
+       4. FORMULARIO: validación y envío a Google Sheets
+       ===================================================== */
+    const formulario = document.getElementById("formContacto");
+    const botonEnviar = document.getElementById("botonEnviar");
+    const estado = document.getElementById("estado");
+
+    // Revisa que el correo tenga forma de correo (algo@dominio.com)
+    function correoValido(texto) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(texto);
+    }
+
+    // Muestra u oculta el mensaje de error de un campo
+    function mostrarError(idCampo, mensaje) {
+      const campo = document.getElementById(idCampo);
+      campo.closest(".campo").classList.toggle("con-error", Boolean(mensaje));
+      document.getElementById("error-" + idCampo).textContent = mensaje;
+      campo.setAttribute("aria-invalid", mensaje ? "true" : "false");
+    }
+
+    // Valida un solo campo. Devuelve true si está bien.
+    function validarCampo(idCampo) {
+      const valor = document.getElementById(idCampo).value.trim();
+      let mensaje = "";
+
+      if (idCampo === "nombre") {
+        if (valor.length < 2) mensaje = "Escribe tu nombre (mínimo 2 letras).";
+      }
+      if (idCampo === "correo") {
+        if (valor === "") mensaje = "Escribe tu correo electrónico.";
+        else if (!correoValido(valor)) mensaje = "Revisa tu correo. Debe verse así: nombre@ejemplo.com";
+      }
+      if (idCampo === "mensaje") {
+        if (valor.length < 10) mensaje = "Escribe un mensaje de al menos 10 letras.";
+      }
+
+      mostrarError(idCampo, mensaje);
+      return mensaje === "";
+    }
+
+    // Valida mientras la persona escribe o sale del campo
+    ["nombre", "correo", "mensaje"].forEach((id) => {
+      const campo = document.getElementById(id);
+      campo.addEventListener("blur", () => validarCampo(id));
+      campo.addEventListener("input", () => {
+        if (campo.closest(".campo").classList.contains("con-error")) validarCampo(id);
+      });
+    });
+
+    // Muestra un mensaje general debajo del botón
+    function mostrarEstado(texto, tipo) {
+      estado.textContent = texto;
+      estado.className = "estado " + (tipo || "");
+    }
+
+    // Al presionar "Enviar mensaje"
+    formulario.addEventListener("submit", async (evento) => {
+      evento.preventDefault();          // evita que la página se recargue
+      mostrarEstado("");
+
+      // 1) Validamos los tres campos (se ejecutan todos para mostrar todos los errores)
+      const resultados = ["nombre", "correo", "mensaje"].map(validarCampo);
+      if (resultados.includes(false)) {
+        // Llevamos el cursor al primer campo con error
+        const primerError = formulario.querySelector(".con-error input, .con-error textarea");
+        if (primerError) primerError.focus();
+        return;
+      }
+
+      // 2) Si el campo trampa tiene texto, es un robot: fingimos éxito y no enviamos nada
+      if (document.getElementById("web").value !== "") {
+        mostrarEstado("¡Mensaje enviado!", "ok");
+        formulario.reset();
+        return;
+      }
+
+      // 3) Revisamos que ya hayas pegado la URL de Apps Script
+      if (URL_APPS_SCRIPT.includes("PEGA_AQUI")) {
+        mostrarEstado("El formulario aún no está conectado. Falta pegar la URL de Apps Script en el código.", "fallo");
+        return;
+      }
+
+      // 4) Enviamos los datos
+      botonEnviar.disabled = true;
+      botonEnviar.textContent = "Enviando…";
+
+      const datos = new URLSearchParams({
+        nombre: document.getElementById("nombre").value.trim(),
+        correo: document.getElementById("correo").value.trim(),
+        mensaje: document.getElementById("mensaje").value.trim()
+      });
+
+      try {
+        // mode "no-cors": Google no permite leer la respuesta desde otra página,
+        // pero el mensaje SÍ se guarda en la hoja. Si no hay error de red, damos por enviado.
+        await fetch(URL_APPS_SCRIPT, { method: "POST", mode: "no-cors", body: datos });
+
+        mostrarEstado("¡Mensaje enviado!", "ok");
+        formulario.reset();
+      } catch (error) {
+        mostrarEstado("No se pudo enviar. Revisa tu conexión e inténtalo de nuevo.", "fallo");
+      } finally {
+        botonEnviar.disabled = false;
+        botonEnviar.textContent = "Enviar mensaje";
+      }
+    });
+  </script>
+</body>
+</html>
